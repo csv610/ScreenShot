@@ -19,10 +19,10 @@ echo ""
 
 # Create virtual environment
 echo "Creating virtual environment..."
-if [ -d "venv" ]; then
+if [ -d "screnv" ]; then
     echo "Virtual environment already exists, skipping creation"
 else
-    python3 -m venv venv
+    python3 -m venv screnv
     echo "✓ Virtual environment created"
 fi
 
@@ -30,7 +30,7 @@ echo ""
 
 # Activate virtual environment
 echo "Activating virtual environment..."
-source venv/bin/activate
+source screnv/bin/activate
 echo "✓ Virtual environment activated"
 
 echo ""
@@ -60,7 +60,7 @@ echo "Setup complete!"
 echo "========================================"
 echo ""
 echo "To activate the virtual environment, run:"
-echo "  source venv/bin/activate"
+echo "  source screnv/bin/activate"
 echo ""
 echo "Available commands:"
 echo "  make help       - Show all available commands"

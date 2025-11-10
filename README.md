@@ -18,6 +18,14 @@ A Python utility for capturing screenshots with flexible options for full-screen
 
 ## Installation
 
+### Automated Setup (Recommended)
+```bash
+git clone https://github.com/csv610/ScreenShot.git
+cd ScreenShot
+./setup.sh
+```
+
+### Manual Setup
 1. Clone the repository:
 ```bash
 git clone https://github.com/csv610/ScreenShot.git
@@ -26,8 +34,8 @@ cd ScreenShot
 
 2. Create a virtual environment:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python -m venv screnv
+source screnv/bin/activate  # On Windows: screnv\Scripts\activate
 ```
 
 3. Install dependencies:
