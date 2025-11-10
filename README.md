@@ -21,7 +21,7 @@ A Python utility for capturing screenshots with flexible options for full-screen
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/ScreenShot.git
+git clone https://github.com/csv610/ScreenShot.git
 cd ScreenShot
 ```
 
@@ -110,4 +110,4 @@ Contributions are welcome! Please feel free to submit a pull request or open an 
 
 ## Author
 
-[Your Name/GitHub]
+[csv610](https://github.com/csv610)
