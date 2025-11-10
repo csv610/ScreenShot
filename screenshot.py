@@ -1,10 +1,11 @@
-import time
 import argparse
 import platform
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
-from typing import Tuple, Optional
+from typing import Optional
+
 from PIL import ImageGrab
 
 
@@ -25,43 +26,7 @@ class ScreenShot:
         self.delay = delay
         self._check_platform_support()
 
-    def _validate_delay(self, delay: int) -> None:
-        """Validate that delay is non-negative."""
-        if delay < 0:
-            raise ValueError(f"Delay must be non-negative, got {delay}")
-
-    @staticmethod
-    def _validate_interval(interval: float) -> None:
-        """Validate that interval is positive."""
-        if interval <= 0:
-            raise ValueError(f"Interval must be positive, got {interval}")
-
-    @staticmethod
-    def _validate_time_limit(time_limit: float) -> None:
-        """Validate that time_limit is positive."""
-        if time_limit <= 0:
-            raise ValueError(f"Time limit must be positive, got {time_limit}")
-
-    def _check_platform_support(self) -> None:
-        """Check if the current platform is supported."""
-        supported_platforms = ("Windows", "Darwin")  # Windows, macOS
-        current_platform = platform.system()
-        if current_platform not in supported_platforms:
-            raise RuntimeError(
-                f"Screenshot capture is not supported on {current_platform}. "
-                f"Supported platforms: {', '.join(supported_platforms)}"
-            )
-
-    def _generate_filename(self, base_name: str, add_timestamp: bool) -> str:
-        """Generate a unique filename with optional timestamp."""
-        if add_timestamp:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            base_name = base_name.replace(".png", f"_{timestamp}.png")
-
-        # Ensure directory exists
-        output_path = Path(base_name)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        return base_name
+    # ===== Public Methods =====
 
     def capture_screen(self) -> bool:
         """
@@ -148,6 +113,29 @@ class ScreenShot:
             print(f"Error during interval capture: {e}", file=sys.stderr)
             return False
 
+    # ===== Private Helper Methods =====
+
+    def _check_platform_support(self) -> None:
+        """Check if the current platform is supported."""
+        supported_platforms = ("Windows", "Darwin")  # Windows, macOS
+        current_platform = platform.system()
+        if current_platform not in supported_platforms:
+            raise RuntimeError(
+                f"Screenshot capture is not supported on {current_platform}. "
+                f"Supported platforms: {', '.join(supported_platforms)}"
+            )
+
+    def _generate_filename(self, base_name: str, add_timestamp: bool) -> str:
+        """Generate a unique filename with optional timestamp."""
+        if add_timestamp:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            base_name = base_name.replace(".png", f"_{timestamp}.png")
+
+        # Ensure directory exists
+        output_path = Path(base_name)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        return base_name
+
     def _generate_unique_interval_filename(self, index: int) -> str:
         """
         Generate unique filenames for interval screenshots.
@@ -163,6 +151,25 @@ class ScreenShot:
         # Insert sequence number before extension
         unique_filename = f"{stem}_{index:04d}{suffix}"
         return str(parent / unique_filename)
+
+    # ===== Validation Methods =====
+
+    def _validate_delay(self, delay: int) -> None:
+        """Validate that delay is non-negative."""
+        if delay < 0:
+            raise ValueError(f"Delay must be non-negative, got {delay}")
+
+    @staticmethod
+    def _validate_interval(interval: float) -> None:
+        """Validate that interval is positive."""
+        if interval <= 0:
+            raise ValueError(f"Interval must be positive, got {interval}")
+
+    @staticmethod
+    def _validate_time_limit(time_limit: float) -> None:
+        """Validate that time_limit is positive."""
+        if time_limit <= 0:
+            raise ValueError(f"Time limit must be positive, got {time_limit}")
 
     @staticmethod
     def _validate_coordinates(x1: int, y1: int, x2: int, y2: int) -> None:
