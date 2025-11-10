@@ -15,7 +15,6 @@ A Python utility for capturing screenshots with flexible options for full-screen
 
 - Python 3.7+
 - Pillow (PIL) >= 10.0.0
-- Playwright >= 1.40.0
 
 ## Installation
 
