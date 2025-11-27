@@ -1,9 +1,11 @@
-.PHONY: help install install-dev clean run lint format test
+.PHONY: help install install-dev clean run lint format test venv act check_venv
 
 help:
 	@echo "ScreenShot - Screenshot Utility"
 	@echo ""
 	@echo "Available commands:"
+	@echo "  make venv          - Create virtual environment"
+	@echo "  make act           - Activate virtual environment"
 	@echo "  make install       - Install dependencies"
 	@echo "  make install-dev   - Install dependencies with dev tools"
 	@echo "  make clean         - Remove cache and build artifacts"
@@ -12,10 +14,23 @@ help:
 	@echo "  make format        - Format code with black"
 	@echo "  make test          - Run tests (if available)"
 
-install:
+venv:
+	python3 -m venv shotenv
+
+act:
+	bash -c "source shotenv/bin/activate && exec bash"
+
+check_venv:
+	@if [ -z "$$VIRTUAL_ENV" ]; then \
+		echo "Error: Virtual environment not activated"; \
+		echo "Run: source shotenv/bin/activate"; \
+		exit 1; \
+	fi
+
+install: check_venv
 	pip install -r requirements.txt
 
-install-dev:
+install-dev: check_venv
 	pip install -r requirements.txt
 	pip install black flake8 pytest
 

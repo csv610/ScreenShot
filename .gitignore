@@ -38,7 +38,10 @@ MANIFEST
 *~
 .DS_Store
 
-# Screenshots (optional - uncomment to ignore generated screenshots)
-# *.png
-# *.jpg
-# *.jpeg
+# Screenshots
+*.png
+*.jpg
+*.jpeg
+
+# Output folder
+output/
