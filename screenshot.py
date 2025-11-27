@@ -1,10 +1,8 @@
-import argparse
 import platform
 import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 from PIL import ImageGrab
 
@@ -25,6 +23,7 @@ class ScreenShot:
         self.output = self._generate_filename(output, timestamp)
         self.delay = delay
         self._check_platform_support()
+        self._ensure_output_folder_exists()
 
     # ===== Public Methods =====
 
@@ -126,15 +125,17 @@ class ScreenShot:
             )
 
     def _generate_filename(self, base_name: str, add_timestamp: bool) -> str:
-        """Generate a unique filename with optional timestamp."""
+        """Generate a unique filename with optional timestamp in the output folder."""
         if add_timestamp:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             base_name = base_name.replace(".png", f"_{timestamp}.png")
 
-        # Ensure directory exists
+        # Place file in output folder if not already in a subdirectory
         output_path = Path(base_name)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        return base_name
+        if output_path.parent == Path("."):
+            output_path = Path("output") / base_name
+
+        return str(output_path)
 
     def _generate_unique_interval_filename(self, index: int) -> str:
         """
@@ -151,6 +152,11 @@ class ScreenShot:
         # Insert sequence number before extension
         unique_filename = f"{stem}_{index:04d}{suffix}"
         return str(parent / unique_filename)
+
+    def _ensure_output_folder_exists(self) -> None:
+        """Ensure the output folder and any parent directories exist."""
+        output_path = Path(self.output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
 
     # ===== Validation Methods =====
 
@@ -187,53 +193,4 @@ class ScreenShot:
         if any(coord < 0 for coord in [x1, y1, x2, y2]):
             raise ValueError("Coordinates must be non-negative")
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Capture a screenshot of the screen.")
-
-    parser.add_argument("--output", type=str, default="screenshot.png",
-                        help="Output file name (default: screenshot.png).")
-    parser.add_argument("--delay", type=int, default=3,
-                        help="Time in seconds to wait before capturing (default: 3 seconds).")
-    parser.add_argument("--timestamp", action="store_true",
-                        help="Append timestamp to the output filename to avoid overwriting.")
-
-    # Optional region capture arguments
-    parser.add_argument("--x1", type=int, help="Top-left X coordinate (for region capture).")
-    parser.add_argument("--y1", type=int, help="Top-left Y coordinate (for region capture).")
-    parser.add_argument("--x2", type=int, help="Bottom-right X coordinate (for region capture).")
-    parser.add_argument("--y2", type=int, help="Bottom-right Y coordinate (for region capture).")
-
-    # Optional interval capture arguments
-    parser.add_argument("--interval", type=float, help="Interval in seconds between screenshots (for interval capture).")
-    parser.add_argument("--time-limit", type=float, help="Total duration in seconds for interval capture.")
-
-    args = parser.parse_args()
-
-    try:
-        # Create ScreenShot object
-        screenshot = ScreenShot(output=args.output, delay=args.delay, timestamp=args.timestamp)
-
-        # Determine capture type (interval, region, or full-screen)
-        coords_provided = [args.x1, args.y1, args.x2, args.y2]
-        interval_provided = args.interval is not None
-        time_limit_provided = args.time_limit is not None
-
-        # Check for interval capture
-        if interval_provided or time_limit_provided:
-            if not (interval_provided and time_limit_provided):
-                parser.error("Both --interval and --time-limit must be provided for interval capture.")
-            success = screenshot.capture_interval(args.interval, args.time_limit)
-        # Check for region capture
-        elif all(coord is not None for coord in coords_provided):
-            success = screenshot.capture_area(args.x1, args.y1, args.x2, args.y2)
-        elif any(coord is not None for coord in coords_provided):
-            parser.error("All coordinates (--x1, --y1, --x2, --y2) must be provided for region capture.")
-        # Default to full-screen capture
-        else:
-            success = screenshot.capture_screen()
-
-        sys.exit(0 if success else 1)
-    except (ValueError, RuntimeError) as e:
-        print(f"Error: {e}", file=sys.stderr)
-        sys.exit(1)
 
