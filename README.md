@@ -18,29 +18,21 @@ A Python utility for capturing screenshots with flexible options for full-screen
 
 ## Installation
 
-### Automated Setup (Recommended)
-```bash
-git clone https://github.com/csv610/ScreenShot.git
-cd ScreenShot
-./setup.sh
-```
-
-### Manual Setup
 1. Clone the repository:
 ```bash
 git clone https://github.com/csv610/ScreenShot.git
 cd ScreenShot
 ```
 
-2. Create a virtual environment:
+2. Create and activate a virtual environment using the Makefile:
 ```bash
-python -m venv screnv
-source screnv/bin/activate  # On Windows: screnv\Scripts\activate
+make venv
+source shotenv/bin/activate  # On Windows: shotenv\Scripts\activate
 ```
 
 3. Install dependencies:
 ```bash
-pip install -r requirements.txt
+make install
 ```
 
 ## Usage
@@ -48,49 +40,58 @@ pip install -r requirements.txt
 ### Full-Screen Capture
 Capture the entire screen with a 3-second delay:
 ```bash
-python screenshot.py
+python screenshot_cli.py
 ```
 
 ### Region Capture
 Capture a specific area (e.g., coordinates 0,0 to 1920,1080):
 ```bash
-python screenshot.py --x1 0 --y1 0 --x2 1920 --y2 1080 --output region.png
+python screenshot_cli.py --x1 0 --y1 0 --x2 1920 --y2 1080 --output region.png
 ```
 
 ### Interval Capture
 Capture screenshots every 2 seconds for 30 seconds total:
 ```bash
-python screenshot.py --interval 2 --time-limit 30 --output screenshots.png
+python screenshot_cli.py --interval 2 --time-limit 30 --output screenshots.png
 ```
 
 ### Command-Line Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `--output` | str | `screenshot.png` | Output file name |
-| `--delay` | int | `3` | Delay in seconds before capturing |
-| `--timestamp` | flag | - | Append timestamp to filename to avoid overwrites |
-| `--x1` | int | - | Top-left X coordinate (for region capture) |
-| `--y1` | int | - | Top-left Y coordinate (for region capture) |
-| `--x2` | int | - | Bottom-right X coordinate (for region capture) |
-| `--y2` | int | - | Bottom-right Y coordinate (for region capture) |
-| `--interval` | float | - | Interval in seconds between screenshots (for interval capture) |
-| `--time-limit` | float | - | Total duration in seconds for interval capture |
+| Option | Short | Type | Default | Description |
+|--------|-------|------|---------|-------------|
+| `--output` | `-o` | str | `screenshot.png` | Output file name (saves to `output/` folder) |
+| `--delay` | `-d` | int | `3` | Delay in seconds before capturing |
+| `--timestamp` | `-t` | flag | - | Append timestamp to filename to avoid overwrites |
+| `--x1` | - | int | - | Top-left X coordinate (for region capture) |
+| `--y1` | - | int | - | Top-left Y coordinate (for region capture) |
+| `--x2` | - | int | - | Bottom-right X coordinate (for region capture) |
+| `--y2` | - | int | - | Bottom-right Y coordinate (for region capture) |
+| `--interval` | `-i` | float | - | Interval in seconds between screenshots (for interval capture) |
+| `--time-limit` | `-l` | float | - | Total duration in seconds for interval capture |
 
 ## Examples
 
 ```bash
-# Capture with 5-second delay
-python screenshot.py --delay 5
+# Capture with 5-second delay (long form)
+python screenshot_cli.py --delay 5
+
+# Capture with 5-second delay (short form)
+python screenshot_cli.py -d 5
 
 # Capture with timestamp to avoid overwriting
-python screenshot.py --timestamp --output my_screenshot.png
+python screenshot_cli.py --timestamp --output my_screenshot.png
+
+# Capture with timestamp (short form)
+python screenshot_cli.py -t -o my_screenshot.png
 
 # Capture region with timestamp
-python screenshot.py --x1 100 --y1 100 --x2 1000 --y2 800 --timestamp --output region.png
+python screenshot_cli.py --x1 100 --y1 100 --x2 1000 --y2 800 --timestamp --output region.png
 
 # Capture 10 screenshots, one every second
-python screenshot.py --interval 1 --time-limit 10 --output screenshot.png
+python screenshot_cli.py --interval 1 --time-limit 10 --output screenshot.png
+
+# Capture every 2 seconds for 10 seconds (short form)
+python screenshot_cli.py -i 2 -l 10
 ```
 
 ## Platform Support
